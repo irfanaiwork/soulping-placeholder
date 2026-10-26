@@ -1,12 +1,365 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SoulPing</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="color-scheme" content="light dark"/>
+<title>Soulping — Meet, Chat & Make New Friends</title>
+<link rel="icon" href="data:,"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff8f6; --bg2:#ffffff; --card:#ffffff; --text:#1a1214; --muted:#6b5a5e; --line:#f1ddd8;
+  --rose:#e8365d; --rose2:#ff6b4a; --rose-dark:#c81e42; --chip:#fff0ec; --nav:#ffffffee;
+  --shadow:0 18px 40px rgba(200,30,66,.12);
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#140d10; --bg2:#1c1216; --card:#22181c; --text:#fff5f2; --muted:#c9aeb3; --line:#352227; --chip:#2e1b20; --nav:#140d10ee; --shadow:0 18px 40px rgba(0,0,0,.45)}
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--bg);color:var(--text)}
+a{color:inherit;text-decoration:none} button,input,select,textarea{font:inherit}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.03em;font-size:28px}
+.logo-mark{width:42px;height:42px;border-radius:13px;background:var(--rose);display:grid;place-items:center;color:#fff;position:relative;flex:0 0 auto}
+.logo-mark:after{content:"";position:absolute;right:-4px;top:-4px;width:14px;height:14px;background:#ffb703;border:3px solid var(--bg);border-radius:50%}
+.logo span{color:var(--rose)}
+header{position:sticky;top:0;z-index:40;background:var(--nav);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.nav-links{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.nav-links a,.drop-btn{padding:9px 13px;border-radius:999px;font-weight:600;font-size:14px;border:0;background:transparent;cursor:pointer;color:var(--text)}
+.nav-links a:hover,.drop-btn:hover{background:var(--chip)}
+.dropdown{position:relative}
+.menu{position:absolute;right:0;top:46px;width:240px;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:8px;display:none}
+.menu.open{display:block}
+.menu button{width:100%;text-align:left;padding:10px 12px;border:0;background:transparent;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px}
+.menu button:hover{background:var(--chip)}
+.btn{background:var(--rose);color:#fff;border:0;padding:12px 20px;border-radius:999px;font-weight:700;cursor:pointer}
+.btn:hover{background:var(--rose-dark)} .btn-outline{background:transparent;color:var(--text);border:1.5px solid var(--line)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.hero{padding:52px 0 28px;display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;background:#ffe9e3;color:#9a3412;padding:7px 12px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.hero h1{font-family:"DM Serif Display",serif;font-size:clamp(42px,6vw,72px);line-height:.95;letter-spacing:-.02em;margin:16px 0}
+.hero h1 i{color:var(--rose);font-style:italic}
+.hero p{font-size:18px;line-height:1.6;color:var(--muted);max-width:560px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.stats{display:flex;gap:22px;margin-top:28px;flex-wrap:wrap}
+.stats b{font-size:22px;display:block}.stats span{font-size:13px;color:var(--muted)}
+.hero-card{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:var(--shadow)}
+.hero-card img{width:100%;height:300px;object-fit:cover;border-radius:20px;background:#ffd9d0}
+.mini-chat{margin-top:14px;background:var(--chip);border-radius:16px;padding:14px}
+.mini-chat p{margin:6px 0;font-size:14px}
+.pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:12px;font-weight:700}
+.toolbar{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr auto;gap:10px;box-shadow:var(--shadow)}
+.toolbar label{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+.toolbar select,.toolbar input{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg2);color:var(--text)}
+.section{padding:38px 0}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.section-head h2{font-family:"DM Serif Display",serif;font-size:38px;margin:0;line-height:1}
+.section-head p{color:var(--muted);margin:6px 0 0}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.profile{background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;cursor:pointer;transition:.2s}
+.profile:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.avatar{height:210px;display:flex;align-items:flex-end;padding:14px;color:#fff;position:relative}
+.avatar .init{font-size:56px;font-weight:800;opacity:.95}
+.online{position:absolute;top:12px;left:12px;background:#111827cc;color:#fff;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:700;display:flex;gap:6px;align-items:center}
+.dot{width:8px;height:8px;background:#22c55e;border-radius:50%}
+.dist{position:absolute;top:12px;right:12px;background:#fff;color:#111;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.pbody{padding:16px}.pbody h3{margin:0;font-size:18px}.pbody p{color:var(--muted);font-size:13.5px;line-height:1.5;margin:8px 0}
+.tags{display:flex;gap:6px;flex-wrap:wrap}.tag{font-size:11px;font-weight:700;background:var(--chip);padding:6px 8px;border-radius:999px}
+.pfoot{display:flex;gap:8px;margin-top:14px}.pfoot button{flex:1;padding:11px;border-radius:999px;border:0;font-weight:700;cursor:pointer}
+.chat-btn{background:var(--rose);color:#fff}.like-btn{background:var(--chip)}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cat{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px}
+.cat h3{margin:8px 0}.cat p{color:var(--muted);line-height:1.55;font-size:14px}
+.countries{display:flex;gap:8px;flex-wrap:wrap}
+.country{padding:10px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font-weight:700;cursor:pointer}
+.country.active{background:var(--rose);color:#fff;border-color:var(--rose)}
+footer{background:#160e11;color:#ffe9e3;margin-top:30px}
+.foot{max-width:1180px;margin:0 auto;padding:42px 20px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:24px}
+footer a{color:#ffd1c7;font-size:14px;display:block;margin:8px 0} footer p{color:#c9aeb3;line-height:1.6;font-size:14px}
+.copy{border-top:1px solid #352227;padding:16px 20px;text-align:center;font-size:13px;color:#c9aeb3;max-width:1180px;margin:0 auto}
+/* Age Gate */
+.gate{position:fixed;inset:0;z-index:100;background:rgba(12,5,7,.72);backdrop-filter:blur(10px);display:grid;place-items:center;padding:18px}
+.gate-card{background:var(--card);max-width:480px;width:100%;border-radius:28px;padding:28px;box-shadow:0 30px 80px rgba(0,0,0,.35);text-align:center}
+.gate-card h2{font-family:"DM Serif Display",serif;font-size:36px;margin:12px 0 6px}.gate-card p{color:var(--muted);line-height:1.6}
+.gender{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+.gender button{padding:18px;border-radius:18px;border:2px solid var(--line);background:var(--bg2);cursor:pointer;font-weight:800;font-size:16px}
+.gender button.sel{border-color:var(--rose);background:#fff0f2;color:var(--rose-dark)}
+.age-check{display:flex;gap:10px;align-items:flex-start;text-align:left;background:var(--chip);padding:14px;border-radius:14px;font-size:14px;line-height:1.5;cursor:pointer}
+.age-check input{width:20px;height:20px;margin-top:2px;accent-color:var(--rose)}
+.gate-error{color:var(--rose);font-weight:700;font-size:13px;min-height:20px;margin-top:8px}
+.blocked{display:none;text-align:center}.blocked.show{display:block}.gate.hide{display:none}
+/* Chat drawer */
+.chat-drawer{position:fixed;right:18px;bottom:18px;width:min(420px,calc(100vw - 24px));height:620px;max-height:calc(100vh - 36px);background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:0 24px 70px rgba(0,0,0,.28);z-index:60;display:none;flex-direction:column;overflow:hidden}
+.chat-drawer.open{display:flex}
+.chat-head{padding:14px;background:#1a1214;color:#fff;display:flex;gap:12px;align-items:center}
+.chat-head .av{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff}
+.moods{display:flex;gap:6px;overflow:auto;padding:10px;background:var(--chip)}
+.mood{white-space:nowrap;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:700;font-size:12px}
+.mood.active{background:var(--rose);color:#fff;border-color:var(--rose)}
+.messages{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.msg{max-width:82%;padding:11px 13px;border-radius:16px;line-height:1.45;font-size:14px}
+.msg.them{background:#fff;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.me{background:var(--rose);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.typing{font-size:12px;color:var(--muted);padding:0 14px 6px;display:none}
+.chat-input{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);background:var(--card)}
+.chat-input input{flex:1;padding:12px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg2);color:var(--text)}
+.chat-input button{background:var(--rose);color:#fff;border:0;width:46px;height:46px;border-radius:50%;cursor:pointer;font-size:18px}
+/* Legal modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:80;display:none;place-items:center;padding:18px}
+.modal.open{display:grid}.modal-box{background:var(--card);max-width:720px;width:100%;max-height:84vh;overflow:auto;border-radius:22px;padding:26px}
+.modal-box h2{margin-top:0;font-family:"DM Serif Display",serif}.modal-box p,.modal-box li{color:var(--muted);line-height:1.65}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.toolbar{grid-template-columns:1fr 1fr}.cats{grid-template-columns:1fr}.foot{grid-template-columns:1fr 1fr}.nav-links a:not(:nth-child(-n+2)){display:none}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr}.foot{grid-template-columns:1fr}.hero{padding-top:28px}}
+</style>
 </head>
 <body>
-<h1>SoulPing</h1>
-<p>Coming soon.</p>
+
+<!-- AGE GATE -->
+<div class="gate" id="ageGate">
+  <div class="gate-card" id="gateMain">
+    <div style="display:flex;justify-content:center"><div class="logo"><div class="logo-mark">♥</div><div>Soul<span>ping</span></div></div></div>
+    <h2>Who are you?</h2>
+    <p>Tell us a little about you so we show you the right people. Soulping is for adults only — preview profiles to try the chat experience.</p>
+    <div class="gender">
+      <button type="button" id="btnMale" onclick="pickGender('male')">♂ &nbsp; I am Male</button>
+      <button type="button" id="btnFemale" onclick="pickGender('female')">♀ &nbsp; I am Female</button>
+    </div>
+    <label class="age-check"><input type="checkbox" id="age18"> <span><strong>I confirm I am 18 years or older.</strong><br>I agree to the Terms & Privacy Policy and understand Soulping is an 18+ community.</span></label>
+    <div class="gate-error" id="gateError"></div>
+    <button class="btn" style="width:100%;padding:16px;font-size:16px" onclick="enterSite()">Enter Soulping →</button>
+    <p style="font-size:12px;margin-top:12px"><a href="#" onclick="showBlocked(event)" style="text-decoration:underline">I am under 18</a> &nbsp;·&nbsp; Safe & respectful community</p>
+  </div>
+  <div class="gate-card blocked" id="gateBlocked">
+    <div style="font-size:52px">🔒</div>
+    <h2>18+ Only</h2>
+    <p>Sorry, Soulping is only for people who are <strong>18 years or older</strong>. The website cannot open for under-18 visitors.<br><br>Come back when you turn 18 — we will be here.</p>
+    <button class="btn btn-outline" onclick="backToGate()">Go Back</button>
+  </div>
+</div>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="#"><div class="logo-mark">♥</div><div>Soul<span>ping</span></div></a>
+    <nav class="nav-links">
+      <a href="#discover">Discover</a><a href="#categories">Categories</a><a href="#countries">Countries</a><a href="#how">How it works</a>
+      <div class="dropdown">
+        <button class="drop-btn" onclick="toggleMenu()">Legal Pages ▾</button>
+        <div class="menu" id="legalMenu">
+          <button onclick="openLegal('privacy')">Privacy Policy</button>
+          <button onclick="openLegal('terms')">Terms of Service</button>
+          <button onclick="openLegal('cookies')">Cookie Policy</button>
+          <button onclick="openLegal('dmca')">DMCA / Copyright</button>
+          <button onclick="openLegal('safety')">Community & Safety</button>
+          <button onclick="openLegal('refund')">Refund Policy</button>
+          <button onclick="openLegal('about')">About Us</button>
+          <button onclick="openLegal('contact')">Contact Us</button>
+        </div>
+      </div>
+      <button class="btn" onclick="document.getElementById('discover').scrollIntoView({behavior:'smooth'})">Join Free</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <span class="eyebrow">● 12,480 people online now</span>
+      <h1>Your next <i>“hey…”</i><br>could change<br>everything.</h1>
+      <p>Meet guys and girls near you and around the world. Pick a mood, start a short sweet chat, and turn a random ping into a real new friend — or something more.</p>
+      <div class="hero-actions"><button class="btn" onclick="document.getElementById('discover').scrollIntoView({behavior:'smooth'})">Start Chatting — It's Free</button><button class="btn btn-outline" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">How Soulping Works</button></div>
+      <div class="stats"><div><b>84K+</b><span>Members</span></div><div><b>12</b><span>Countries</span></div><div><b>4.8 ★</b><span>Member rating</span></div><div><b>24/7</b><span>Active chats</span></div></div>
+    </div>
+    <div class="hero-card">
+      <div class="avatar" style="height:300px;border-radius:20px;background:linear-gradient(135deg,#e8365d,#ff6b4a 55%,#ffb703)"><div><div class="init" style="font-size:28px">Ayesha, 24 • Lahore</div><div style="opacity:.9;font-size:14px">“Coffee, late-night talks & good vibes ☕”</div></div><span class="online"><span class="dot"></span> Online now</span></div>
+      <div class="mini-chat"><span class="pill">MOOD: FLIRTY 🔥</span><p><strong>Ayesha:</strong> Heyy… you looked interesting, so I pinged first 😉</p><p style="text-align:right"><strong>You:</strong> Glad you did. What's your vibe today?</p><p><strong>Ayesha:</strong> Flirty but sweet. Ask me something fun 👀</p></div>
+    </div>
+  </section>
+
+  <div class="toolbar" aria-label="Filters">
+    <div><label>Search</label><input id="searchInput" placeholder="Search name, city, interest…" oninput="renderProfiles()"></div>
+    <div><label>Country</label><select id="countryFilter" onchange="renderProfiles()"><option value="">All Countries</option></select></div>
+    <div><label>Category</label><select id="catFilter" onchange="renderProfiles()"><option value="">All Categories</option><option>Friendship</option><option>Serious Dating</option><option>Flirty Chat</option><option>Long Distance</option><option>Travel Buddy</option></select></div>
+    <div><label>Show me</label><select id="showFilter" onchange="renderProfiles()"><option value="auto">Based on my choice</option><option value="female">Women</option><option value="male">Men</option><option value="all">Everyone</option></select></div>
+    <div style="align-self:end"><button class="btn" onclick="renderProfiles()">Search</button></div>
+  </div>
+
+  <section class="section" id="discover">
+    <div class="section-head"><div><h2 id="feedTitle">People near you</h2><p id="feedSub">Demo preview profiles — tap any profile to try the chat box. Replies match the mood you pick.</p></div><span class="pill" id="feedCount"></span></div>
+    <div class="grid" id="profileGrid"></div>
+    <p id="emptyState" style="display:none;text-align:center;color:var(--muted);padding:30px">No profiles match these filters — try another country or category.</p>
+  </section>
+
+  <section class="section" id="categories">
+    <div class="section-head"><div><h2>Pick your category, set your mood</h2><p>Every chat starts with a mood — the replies change with it.</p></div></div>
+    <div class="cats">
+      <div class="cat"><span class="pill">🤝 FRIENDLY</span><h3>Friendship & New Friends</h3><p>Easy, respectful chats. Talk about life, studies, work, music and plans — no pressure, just good company.</p></div>
+      <div class="cat"><span class="pill">😉 FLIRTY</span><h3>Flirty Chat</h3><p>Playful compliments, teasing questions and short replies that keep you hooked. Our most popular mood.</p></div>
+      <div class="cat"><span class="pill">❤️ ROMANTIC</span><h3>Serious & Romantic</h3><p>For people looking for something real. Slower, sweeter conversations that can turn into long-distance love.</p></div>
+      <div class="cat"><span class="pill">🎉 PLAYFUL</span><h3>Fun & Games</h3><p>Truth-or-dare style questions, would-you-rather, and jokes. Perfect when you are bored and want energy.</p></div>
+      <div class="cat"><span class="pill">🔥 SPICY / BOLD</span><h3>Bold — 18+ Only</h3><p>Confident, daring vibes for adults who like bold flirting. Always consensual, always respectful — block anytime.</p></div>
+      <div class="cat"><span class="pill">🌍 LONG DISTANCE</span><h3>Across Countries</h3><p>Meet people from Pakistan, India, USA, UK, Canada, UAE and more countries. Love and friendship have no borders.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="countries">
+    <div class="section-head"><div><h2>Browse by country</h2><p>Tap a country to filter the feed instantly.</p></div></div>
+    <div class="countries" id="countryChips"></div>
+  </section>
+
+  <section class="section" id="how">
+    <div class="section-head"><div><h2>How it works</h2><p>Three steps. Less than a minute.</p></div></div>
+    <div class="cats">
+      <div class="cat"><b style="font-size:28px;color:var(--rose)">01</b><h3>Confirm 18+ & your gender</h3><p>The welcome popup asks if you are male or female and 18+. Girls see guys, guys see girls — simple.</p></div>
+      <div class="cat"><b style="font-size:28px;color:var(--rose)">02</b><h3>Pick a profile & a mood</h3><p>Choose Friendly, Flirty, Romantic, Playful or Bold. The mood controls the style of every reply you get.</p></div>
+      <div class="cat"><b style="font-size:28px;color:var(--rose)">03</b><h3>Chat in your language</h3><p>Write in English, get English back. Write in Roman Urdu, get Roman Urdu back. Short, sweet, addictive replies.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot">
+    <div><a class="logo" href="#" style="color:#fff"><div class="logo-mark">♥</div><div>Soul<span style="color:#ff6b4a">ping</span></div></a><p>Soulping is a friendly 18+ community to meet new people, chat in your mood and your language, and make friends across 12 countries.</p><p><span class="pill" style="background:#2e1b20;color:#ffb4a2;border-color:#452a30">18+ ONLY • BE KIND • STAY SAFE</span></p></div>
+    <div><strong>Discover</strong><a href="#discover">Browse Profiles</a><a href="#categories">Categories</a><a href="#countries">Countries</a><a href="#how">How It Works</a></div>
+    <div><strong>Legal — AdSense Pages</strong><a href="#" onclick="openLegal('privacy');return false">Privacy Policy</a><a href="#" onclick="openLegal('terms');return false">Terms of Service</a><a href="#" onclick="openLegal('cookies');return false">Cookie Policy</a><a href="#" onclick="openLegal('dmca');return false">DMCA</a><a href="#" onclick="openLegal('refund');return false">Refund Policy</a></div>
+    <div><strong>Company</strong><a href="#" onclick="openLegal('about');return false">About Us</a><a href="#" onclick="openLegal('contact');return false">Contact Us</a><a href="#" onclick="openLegal('safety');return false">Safety Guidelines</a><a href="https://soulping.fun">soulping.fun</a></div>
+  </div>
+  <div class="copy">© 2026 Soulping — soulping.fun • Made for meeting people, not for sharing personal data. Never share your address, passwords or money with anyone you meet online.</div>
+</footer>
+
+<!-- CHAT -->
+<div class="chat-drawer" id="chatDrawer" role="dialog" aria-label="Chat">
+  <div class="chat-head"><div class="av" id="chatAv">A</div><div style="flex:1"><strong id="chatName">—</strong><div style="font-size:12px;opacity:.8" id="chatMeta">Online now</div></div><button onclick="closeChat()" style="background:#ffffff22;border:0;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px">✕</button></div>
+  <div class="moods" id="moodBar"></div>
+  <div class="messages" id="messages"></div>
+  <div class="typing" id="typing">typing…</div>
+  <form class="chat-input" onsubmit="sendMsg(event)"><input id="chatInput" placeholder="Type… English ya Roman Urdu" autocomplete="off"><button type="submit" aria-label="Send">➤</button></form>
+</div>
+
+<!-- LEGAL MODAL -->
+<div class="modal" id="legalModal"><div class="modal-box"><button class="btn btn-outline" style="float:right" onclick="closeLegal()">Close ✕</button><h2 id="legalTitle"></h2><div id="legalBody"></div></div></div>
+
+<script>
+var myGender=null, currentProfile=null, currentMood='Flirty';
+var moods=['Friendly','Flirty','Romantic','Playful','Spicy'];
+var countries=['Pakistan','India','Bangladesh','United States','United Kingdom','Canada','UAE','Saudi Arabia','Germany','Australia','Turkey','Malaysia'];
+var colors=['linear-gradient(135deg,#e8365d,#ff6b4a)','linear-gradient(135deg,#0ea5a4,#2563eb)','linear-gradient(135deg,#f59e0b,#ef4444)','linear-gradient(135deg,#7c3aed,#ec4899)','linear-gradient(135deg,#059669,#84cc16)','linear-gradient(135deg,#111827,#e8365d)'];
+var females=[
+ ['Ayesha Khan',24,'Pakistan','Lahore','Coffee, late-night talks aur good vibes. New friends welcome!','Friendship'],
+ ['Zara Malik',22,'Pakistan','Karachi','Makeup, reels aur thodi si flirty baatein 😉','Flirty Chat'],
+ ['Fatima Noor',26,'India','Delhi','Books, travel aur deep conversations pasand hain.','Serious Dating'],
+ ['Priya Sharma',23,'India','Mumbai','Dance, movies aur fun chats — boredom not allowed.','Friendship'],
+ ['Emily Rose',25,'United States','New York','NYC girl, art galleries & rooftop sunsets. Say hey!','Serious Dating'],
+ ['Sophia Miller',27,'United Kingdom','London','Tea, books and sarcasm. Looking for a real connection.','Long Distance'],
+ ['Olivia Brown',24,'Canada','Toronto','Hiking, playlists aur long drives. Travel buddy?','Travel Buddy'],
+ ['Amira Ali',23,'UAE','Dubai','Dubai life, fashion aur sweet chats.','Flirty Chat'],
+ ['Hira Shah',21,'Pakistan','Islamabad','Student life, memes aur friendly vibes only.','Friendship'],
+ ['Ananya Patel',25,'India','Bangalore','Tech girl who loves chai & coding jokes.','Friendship'],
+ ['Charlotte Lee',28,'Australia','Sydney','Beach days, surf aur honest conversations.','Serious Dating'],
+ ['Mia Wilson',26,'Germany','Berlin','Learning Urdu, loves cultures & new friends worldwide.','Long Distance']
+];
+var males=[
+ ['Ahmed Raza',26,'Pakistan','Lahore','Gym, bikes aur achi company. Chatting mein maza ayega.','Friendship'],
+ ['Bilal Hussain',24,'Pakistan','Karachi','Cricket, chai aur thoda sa flirt 😉','Flirty Chat'],
+ ['Arjun Mehta',27,'India','Delhi','Startup life, travel aur deep talks.','Serious Dating'],
+ ['Rahul Verma',25,'India','Mumbai','Music producer, fun vibes & late-night chats.','Friendship'],
+ ['James Carter',28,'United States','Los Angeles','Surfer, photographer, looking for something real.','Serious Dating'],
+ ['Liam Walker',26,'United Kingdom','Manchester','Football, banter aur honest conversations.','Long Distance'],
+ ['Noah Tremblay',25,'Canada','Vancouver','Mountains, coffee aur travel stories.','Travel Buddy'],
+ ['Omar Farooq',27,'UAE','Dubai','Business by day, poet by night. Sweet talks only.','Flirty Chat'],
+ ['Usman Tariq',23,'Pakistan','Islamabad','Student, gamer aur memes ka king.','Friendship'],
+ ['Kabir Singh',26,'India','Bangalore','Fitness, food aur friendly chats.','Friendship'],
+ ['Lucas Weber',29,'Germany','Munich','Engineer who loves languages & cultures.','Long Distance'],
+ ['Ethan Clark',27,'Australia','Melbourne','Coffee snob, beach lover, real connection chahiye.','Serious Dating']
+];
+function toProfiles(arr,g){return arr.map(function(p,i){return{name:p[0],age:p[1],country:p[2],city:p[3],bio:p[4],cat:p[5],gender:g,color:colors[i%colors.length],dist:(2+i*1.7).toFixed(1)+' km',online:i%3!==2}})}
+var profiles=toProfiles(females,'female').concat(toProfiles(males,'male'));
+
+function pickGender(g){myGender=g;document.getElementById('btnMale').classList.toggle('sel',g==='male');document.getElementById('btnFemale').classList.toggle('sel',g==='female');document.getElementById('gateError').textContent='';}
+function showBlocked(e){e.preventDefault();document.getElementById('gateMain').style.display='none';document.getElementById('gateBlocked').classList.add('show');}
+function backToGate(){document.getElementById('gateMain').style.display='block';document.getElementById('gateBlocked').classList.remove('show');}
+function enterSite(){
+  if(!myGender){document.getElementById('gateError').textContent='Please select Male or Female first.';return;}
+  if(!document.getElementById('age18').checked){document.getElementById('gateError').textContent='You must confirm you are 18+ to enter. Under-18 visitors cannot use Soulping.';return;}
+  document.getElementById('ageGate').classList.add('hide');
+  document.getElementById('feedTitle').textContent = myGender==='male' ? 'Girls online near you' : 'Guys online near you';
+  renderProfiles();
+}
+function toggleMenu(){document.getElementById('legalMenu').classList.toggle('open');}
+document.addEventListener('click',function(e){if(!e.target.closest('.dropdown'))document.getElementById('legalMenu').classList.remove('open');});
+
+/* Filters */
+var cs=document.getElementById('countryFilter');countries.forEach(function(c){var o=document.createElement('option');o.textContent=c;cs.appendChild(o);});
+var chips=document.getElementById('countryChips');
+countries.forEach(function(c){var b=document.createElement('button');b.className='country';b.textContent=c;b.onclick=function(){cs.value=c;document.querySelectorAll('.country').forEach(function(x){x.classList.remove('active')});b.classList.add('active');renderProfiles();document.getElementById('discover').scrollIntoView({behavior:'smooth'});};chips.appendChild(b);});
+
+function targetGender(){var s=document.getElementById('showFilter').value;if(s==='female'||s==='male')return s;if(s==='all')return 'all';if(myGender==='male')return 'female';if(myGender==='female')return 'male';return 'all';}
+function renderProfiles(){
+  var q=(document.getElementById('searchInput').value||'').toLowerCase(), co=cs.value, cat=document.getElementById('catFilter').value, tg=targetGender();
+  var list=profiles.filter(function(p){return (tg==='all'||p.gender===tg)&&(!co||p.country===co)&&(!cat||p.cat===cat)&&(!q||(p.name+' '+p.city+' '+p.country+' '+p.bio).toLowerCase().indexOf(q)>-1);});
+  document.getElementById('feedCount').textContent=list.length+' profiles online';
+  document.getElementById('emptyState').style.display=list.length?'none':'block';
+  document.getElementById('profileGrid').innerHTML=list.map(function(p){
+    var idx=profiles.indexOf(p);
+    return '<article class="profile" onclick="openChat('+idx+')"><div class="avatar" style="background:'+p.color+'"><span class="online"><span class="dot"></span>'+(p.online?'Online now':'Active today')+'</span><span class="dist">'+p.dist+' away</span><span class="init">'+p.name.charAt(0)+'</span></div><div class="pbody"><h3>'+p.name+', '+p.age+'</h3><div style="font-size:12px;color:var(--muted);font-weight:700">📍 '+p.city+', '+p.country+'</div><p>'+p.bio+'</p><div class="tags"><span class="tag">'+p.cat+'</span><span class="tag">💬 Chat now</span><span class="tag">EN / Roman Urdu</span></div><div class="pfoot"><button class="chat-btn">💬 Chat Now</button><button class="like-btn">♥ Like</button></div></div></article>';
+  }).join('');
+}
+
+/* Chat + mood replies (short) */
+var replies={
+ Friendly:{en:["Heyy, nice to meet you 😊 Where are you from?","That sounds fun! What do you do for fun?","Haha nice 😄 Tell me one good thing about your day?","Cool! Friends first — what music do you like?","Love that. So, coffee person or chai person? ☕","Interesting! What city are you chatting from?"],
+ ur:["Salam! Acha laga baat karke 😊 Tum kahan se ho?","Haha zabardast! Aur sunao, din kaisa gaya?","Nice yaar! Tumhari hobbies kya hain?","Chai wale ho ya coffee wale? ☕ Sach batana","Achaa, aur batao — parhai ya job?","Bohat khoob! Tumhara favourite khana kya hai?"]},
+ Flirty:{en:["You have my full attention now 😉 So… single?","Careful, I might start liking this chat 👀 Your turn — ask me anything.","That smile in your words… cute. What’s your vibe tonight?","You pinged the right person 😌 Tell me, sweet or bold?","Hmm, interesting… I like your style. Age & city? 😉","Don’t stop now, this was getting good 👀"],
+ ur:["Uff, tum to dilchasp ho 😉 Single ho ya…?","Tumhari baatein achi lag rahi hain 👀 Aur batao, mood kya hai?","Itni sweet baatein? Dil jeet loge tum 😌 Kahan se ho?","Acha ji… to flirt karna aata hai tumhein? 😏","Ruko mat, baat achi ja rahi hai 👀 Age kya hai tumhari?","Tum mein kuch khaas hai… sach mein. Aur sunao?"]},
+ Romantic:{en:["I believe the best chats start slow… tell me about you ❤️","That was sweet. Do you believe in long-distance love?","You feel different from the rest… in a good way 🌙","I’d love a long talk tonight. What’s your dream life like?","Maybe this ping was meant to happen ✨ Tell me more?"],
+ ur:["Kuch log dil ko sukoon dete hain… tum waisa lagte ho ❤️","Aahista aahista baat karte hain, pehle tum batao apne baare mein?","Long distance par yakeen hai tumhein? Sach batana 🌙","Aaj raat lambi baat karne ka dil hai… tum sunao?","Shayad ye ping aise hi nahi aya ✨ Aur batao?"]},
+ Playful:{en:["Okay fun mode ON 🎉 Truth or dare — pick one!","Would you rather: beach date or midnight drive? 🚗","Haha you’re fun! Quick — pizza or burgers? No thinking!","Challenge: describe yourself in 3 emojis only 😄 Go!","I bet I can make you laugh in 2 messages. Ready? 😏"],
+ ur:["Chalo khelte hain 🎉 Truth ya dare? Jaldi bolo!","Ek choose karo: chai ke sath barish, ya long drive? 🚗","3 emojis mein khud ko describe karo, dekhein kya banta hai 😄","Pizza ya biryani? Galat jawab = block 😂","Mein tumhein hasa sakta/sakti hoon, challenge accepted? 😏"]},
+ Spicy:{en:["You picked Bold… I like that confidence 🔥 Tell me more.","Careful — chats like this don’t stay innocent for long 😏","So tell me, what’s really on your mind right now? 🔥","Bold of you to message me first… I’m impressed 👀","Keep talking like that and I won’t want to leave 😌"],
+ ur:["Bold mood? Acha taste hai tumhara 🔥 Aur batao…","Aisi baatein karoge to chat lambi ho jayegi 😏","Sach batao, abhi dil mein kya chal raha hai? 🔥","Pehla message hi itna bold… impress kar diya 👀","Aise hi baat karte raho, rukne ka dil nahi karega 😌"]}
+};
+function isUrdu(t){t=(' '+t.toLowerCase()+' ');var w=[' kya ',' hai ',' ho ',' tum ',' aap ',' mera ',' meri ',' mujhe ',' kaisa ',' kaisi ',' theek ',' salam ',' assalam ',' yaar ',' batao ',' sunao ',' kahan ',' kab ',' kyun ',' acha ',' bohat ',' bahut ',' kesy ',' kese ',' hoo ',' hain ',' nahi ',' nhi ',' kar ',' raha ',' rahi ',' dil ',' mohabbat ',' pyar ',' chai ',' aur ',' bata ',' naam ',' kya ha ',' kesa '];for(var i=0;i<w.length;i++)if(t.indexOf(w[i])>-1)return true;return false;}
+function openChat(idx){
+  currentProfile=profiles[idx];
+  document.getElementById('chatDrawer').classList.add('open');
+  document.getElementById('chatAv').textContent=currentProfile.name.charAt(0);
+  document.getElementById('chatAv').style.background=currentProfile.color;
+  document.getElementById('chatName').textContent=currentProfile.name+', '+currentProfile.age;
+  document.getElementById('chatMeta').textContent=(currentProfile.online?'Online now':'Active today')+' • '+currentProfile.city+', '+currentProfile.country;
+  renderMoods(); document.getElementById('messages').innerHTML='';
+  addMsg('them', currentProfile.gender==='female' ? "Heyy… I saw you viewed my profile 😉 I’m "+currentProfile.name.split(' ')[0]+". Say something interesting?" : "Hey! I’m "+currentProfile.name.split(' ')[0]+" 😊 Good to see you here — where are you from?");
+  setTimeout(function(){document.getElementById('chatInput').focus();},200);
+}
+function renderMoods(){document.getElementById('moodBar').innerHTML=moods.map(function(m){return '<button class="mood'+(m===currentMood?' active':'')+'" onclick="setMood(\''+m+'\')">'+m+(m==='Flirty'?' 😉':m==='Spicy'?' 🔥':m==='Friendly'?' 🤝':m==='Romantic'?' ❤️':' 🎉')+'</button>';}).join('');}
+function setMood(m){currentMood=m;renderMoods();addMsg('them', m==='Spicy'?"Mood changed to Bold 🔥 Now I’m curious about you…": "Mood: "+m+" — okay, I like this vibe 😊 Keep talking?");}
+function closeChat(){document.getElementById('chatDrawer').classList.remove('open');}
+function addMsg(who,text){var d=document.createElement('div');d.className='msg '+who;d.textContent=text;var box=document.getElementById('messages');box.appendChild(d);box.scrollTop=box.scrollHeight;}
+var counters={};
+function sendMsg(e){e.preventDefault();var inp=document.getElementById('chatInput');var t=inp.value.trim();if(!t)return;addMsg('me',t);inp.value='';
+  document.getElementById('typing').style.display='block';
+  var ur=isUrdu(t);var bank=replies[currentMood][ur?'ur':'en'];
+  var key=currentMood+(ur?'ur':'en');counters[key]=(counters[key]||0)+1;
+  var low=t.toLowerCase();var reply;
+  if(/^(hi|hello|hey|salam|aoa|assalam)/.test(low)) reply=ur?"Walaikum salam 😊 Tum pehle apna naam aur city batao?": "Heyy you 😊 First — your name and city?";
+  else if(low.indexOf('name')>-1||low.indexOf('naam')>-1) reply=ur?("Mera naam "+currentProfile.name.split(' ')[0]+" hai 😊 Tumhara naam kya hai?"):("I’m "+currentProfile.name.split(' ')[0]+" 😊 And you — what should I call you?");
+  else if(low.indexOf('age')>-1||low.indexOf('umar')>-1) reply=ur?("Mein "+currentProfile.age+" ki/ka hoon 😌 Tumhari age kya hai?"):("I’m "+currentProfile.age+" 😌 How old are you?");
+  else reply=bank[counters[key]%bank.length];
+  setTimeout(function(){document.getElementById('typing').style.display='none';addMsg('them',reply);},900+Math.random()*700);
+}
+
+/* Legal pages */
+var legal={
+ privacy:['Privacy Policy','<p>Last updated: October 2026. Soulping (soulping.fun) respects your privacy.</p><p><strong>What we collect:</strong> the gender and 18+ confirmation you choose in the welcome popup, and the filters you use on this page. This demo page does not create accounts or store chat messages on a server.</p><p><strong>Cookies & ads:</strong> If advertising (including Google AdSense) is enabled, Google and its partners may use cookies to serve ads based on your visits to this and other sites. You can opt out of personalised ads in your Google Ads Settings.</p><p><strong>Your choices:</strong> Never share your home address, passwords, bank details or money with anyone you meet online. Contact us via the Contact page for privacy questions or data requests.</p>'],
+ terms:['Terms of Service','<p>By entering Soulping you confirm you are 18 or older and agree to these terms.</p><ul><li>Be respectful. Harassment, hate speech, spam and scams are banned.</li><li>No sharing of other people’s private photos or personal data.</li><li>Profiles are for meeting and chatting only; commercial solicitation is not allowed.</li><li>We may remove content or access that breaks these rules.</li><li>Meet online contacts in public places first and tell a friend.</li></ul>'],
+ cookies:['Cookie Policy','<p>Soulping uses essential cookies for site function and, when ads are enabled, advertising cookies from partners such as Google AdSense.</p><p>You can clear or block cookies anytime in your browser settings. Blocking cookies may affect how the site works.</p>'],
+ dmca:['DMCA / Copyright Policy','<p>Soulping respects copyright law. If you believe content on soulping.fun infringes your copyright, contact us via the Contact page with: your name, the copyrighted work, the exact URL of the infringing material, and a good-faith statement.</p><p>Valid notices are reviewed promptly and infringing material is removed.</p>'],
+ safety:['Community & Safety Guidelines','<ul><li>18+ only. Anyone under 18 must leave.</li><li>Consent first — “no” always means no, in every mood including Bold.</li><li>Never send money, gift cards or passwords to anyone.</li><li>Report and block anyone who makes you uncomfortable.</li><li>Keep chats inside Soulping until you trust the person.</li></ul>'],
+ refund:['Refund Policy','<p>Soulping’s basic chatting is free. If paid features are introduced, purchases will be described clearly before payment.</p><p>Refunds for paid features, where applicable, are handled case by case within 7 days of purchase — contact us via the Contact page with your receipt details.</p>'],
+ about:['About Us','<p>Soulping is a friendly place on the web to meet guys and girls from 12 countries, start a chat in the mood you choose — Friendly, Flirty, Romantic, Playful or Bold — and make real new friends.</p><p>Write in English or Roman Urdu: Soulping chats reply in your language, short and sweet.</p>'],
+ contact:['Contact Us','<p>Questions, safety reports or business enquiries about Soulping:</p><p><strong>Website:</strong> soulping.fun<br><strong>Support:</strong> Use the chat on this page and mention “Support”, or write via the email listed on soulping.fun.</p><p>For copyright matters, see our DMCA page. For privacy matters, see our Privacy Policy.</p>']
+};
+function openLegal(k){document.getElementById('legalTitle').textContent=legal[k][0];document.getElementById('legalBody').innerHTML=legal[k][1];document.getElementById('legalModal').classList.add('open');document.getElementById('legalMenu').classList.remove('open');}
+function closeLegal(){document.getElementById('legalModal').classList.remove('open');}
+renderProfiles();
+</script>
 </body>
 </html>
