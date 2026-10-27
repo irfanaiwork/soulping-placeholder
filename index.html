@@ -490,5 +490,25 @@ renderProfiles();
 <script data-cfasync="false" src="https://brijmohan.org/14/18725f552ec99cdd551672d1ed503aed"></script>
 <script async="async" data-cfasync="false" src="https://brijmohan.org/21/e60acdf136956d91ed463eac9fd24be8"></script>
 <script data-cfasync="false" src="https://ahuramazda.org/1/a94ae01a8e2899b7a094398cee7bbba5"></script>
+<script>
+/* Soulping chat guard: while the chat drawer is open, clicks inside it must not
+   bubble up to document-level popunder listeners, and window.open popunders are
+   blocked. Banner ads and the social bar are untouched (they do not use window.open
+   from inside the chat, and their scripts are not removed). */
+(function(){
+  var drawer=document.getElementById('chatDrawer');
+  if(!drawer) return;
+  function chatOpen(){ return drawer.classList.contains('open'); }
+  /* Bubble phase (not capture): chat buttons/inputs handle the click first,
+     then propagation stops here, so document/window popunder listeners never see it. */
+  drawer.addEventListener('click', function(e){ e.stopPropagation(); }, false);
+  drawer.addEventListener('touchstart', function(e){ e.stopPropagation(); }, false);
+  var realOpen=window.open;
+  window.open=function(){
+    if(chatOpen()){ return null; }
+    return realOpen.apply(window, arguments);
+  };
+})();
+</script>
 </body>
 </html>
